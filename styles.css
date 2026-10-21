@@ -1,0 +1,139 @@
+body{
+    margin: 0;
+    background-color: #caf0f8;
+    font-family: 'Comfortaa', sans-serif;
+}
+header{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #03045e;
+    padding: 10px;
+    margin: 0 auto;
+    margin-top: 10px;
+    max-width: 700px;
+    border-radius: 30px;
+    color: white;
+    text-align: center;
+}
+
+main{
+    padding: 10px;
+    max-width: 700px;
+    margin: 0 auto;
+}
+
+section{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: center;
+    background-color: white;
+    border-radius: 15px;
+    margin: 10px;
+    padding: 20px;
+}
+h2{
+    color: #03045E;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+#taskForm{
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 100%;
+    
+}
+
+
+
+#taskName, #importance, #duration{
+    background-color: #f0fafd;
+    border: solid #0077B6 2px;
+    border-radius: 5px;
+    font-family: inherit;
+    padding: 10px;
+}
+
+#addTask{
+    background-color: #0077B6;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+    padding: 12px;
+    cursor: pointer;
+}
+#addTask:hover {
+    background-color: #023E8A;
+}
+
+.bottomRow{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+#errorMessage {
+    margin: 0;
+}
+
+.timerSection{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: 10px;
+}
+
+#timerDisplay{
+    font-size: 40px;
+    font-weight: bold;
+    color: #03045E;
+    margin: 10px 0;
+}
+
+.buttons{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+#startTimer, #resetTimer{
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-family: inherit;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+#startTimer{
+    background-color: #0077B6;
+    color: white;
+}
+
+#startTimer:disabled{
+    background-color: #90E0EF;
+    color: #023E8A;
+    cursor: not-allowed;
+}
+
+#startTimer:hover:not(:disabled){
+    background-color: #023E8A;
+}
+
+#resetTimer{
+    background-color: #023E8A;
+    color: white;
+}
+
+#resetTimer:hover{
+    background-color: #0077B6;
+}
