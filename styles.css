@@ -137,3 +137,41 @@ h2{
 #resetTimer:hover{
     background-color: #0077B6;
 }
+
+.importanceLable{
+    padding: 4px;
+    border-radius: 8px;
+    font-size: 12px;
+}
+
+.high {
+    background-color: #991B1B;
+    color: #FEE2E2;
+}
+
+.medium {
+    background-color: #854D0E;
+    color: #FEF9C3;
+}
+
+.low {
+    background-color: #166534;
+    color: #DCFCE7;
+}
+
+#taskList{
+    list-style: none;
+    padding: 0;
+    width: 100%;
+}
+
+#taskList li{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f0fafd;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 20px;
+    color: #03045E;
+}
