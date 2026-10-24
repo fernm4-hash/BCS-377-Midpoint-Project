@@ -40,7 +40,6 @@ h2{
     margin-bottom: 10px;
 }
 
-
 #taskForm{
     display: flex;
     flex-direction: column;
@@ -48,8 +47,6 @@ h2{
     width: 100%;
     
 }
-
-
 
 #taskName, #importance, #duration{
     background-color: #f0fafd;
@@ -138,7 +135,7 @@ h2{
     background-color: #0077B6;
 }
 
-.importanceLable{
+.importanceLabel{
     padding: 4px;
     border-radius: 8px;
     font-size: 12px;
@@ -174,4 +171,15 @@ h2{
     margin: 5px;
     border-radius: 20px;
     color: #03045E;
+}
+.taskInfo{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.completed{
+    text-decoration: line-through;
+    opacity: 0.6;
+    color: gray;
 }
