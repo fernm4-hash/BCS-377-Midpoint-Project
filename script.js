@@ -6,10 +6,10 @@ const taskList = document.getElementById("taskList");
 const tasks = [];
 
 taskForm.addEventListener("submit", (event) =>{
-    event.preventDefault();
-    const title = taskName.value.trim();
+    event.preventDefault(); // prvents the form from submitting to a server
+    const title = taskName.value.trim(); // get rid of whitespace 
     const priority = importance.value;
-    if(title === ""){
+    if(title === ""){ //give error message if the user does not prvide a task name
         errorMessage.textContent= "Please enter a task name!"
         return
     }
@@ -37,6 +37,16 @@ function displayTasks(){
 
      let completedTasks = tasks.filter(task =>{
         return task.completed === true
+    })
+
+    const importanceOrder = {
+        High: 1,
+        Medium: 2,
+        Low: 3
+    }
+
+    activeTasks.sort((a,b) =>{
+        return importanceOrder[a.importance] - importanceOrder[b.importance];
     })
 
     let sortedTasks = activeTasks.concat(completedTasks)
@@ -74,11 +84,28 @@ function displayTasks(){
             }
         })
 
+        let remove = document.createElement("button")
+        remove.textContent = "Delete"
+        remove.classList.add("deleteButton")
+        
+        remove.addEventListener("click", (event) => {
+           let taskIndex = tasks.findIndex(item => {
+                return item.id === task.id
+            })
+            if( taskIndex !== -1){
+                tasks.splice(taskIndex,1)
+                displayTasks()
+            }
+        })
+        
+
         taskInfo.appendChild(checkBox)
         taskInfo.appendChild(spanTaskInfo)
         listItem.prepend(taskInfo)
         listItem.appendChild(importanceSpan);
+        listItem.appendChild(remove)
         taskList.appendChild(listItem);
+        
 
         /* This is what I am creating in html
         <li>
