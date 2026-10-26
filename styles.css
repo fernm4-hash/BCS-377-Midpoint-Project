@@ -183,3 +183,7 @@ h2{
     opacity: 0.6;
     color: gray;
 }
+
+#taskList li.doingNow{
+    background-color: #90E0EF;
+}

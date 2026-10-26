@@ -3,7 +3,10 @@ const taskName = document.getElementById("taskName");
 const importance = document.getElementById("importance");
 const errorMessage = document.getElementById("errorMessage");
 const taskList = document.getElementById("taskList");
+const doingNowTask = document.getElementById("doingNowTask");
+
 const tasks = [];
+let doingNowTaskId = null;
 
 taskForm.addEventListener("submit", (event) =>{
     event.preventDefault(); // prvents the form from submitting to a server
@@ -57,6 +60,10 @@ function displayTasks(){
 
         let listItem = document.createElement("li");
 
+        if(task.id === doingNowTaskId){
+            listItem.classList.add("doingNow")
+        }
+
         let importanceSpan = document.createElement("span");
         importanceSpan.textContent= task.importance;
         importanceSpan.classList.add("importanceLabel", task.importance.toLowerCase())
@@ -108,12 +115,21 @@ function displayTasks(){
 
         checkBox.addEventListener("change", (event) =>{
             task.completed = checkBox.checked;
-            if(task.completed){
+            if(task.completed && task.id === doingNowTaskId ){
                 spanTaskInfo.classList.add("completed")
+                doingNowTaskId = null
+                doingNowTask.textContent = "None";
             }
             else{
                 spanTaskInfo.classList.remove("completed")
             }
+            let taskIndex = tasks.findIndex(item => item.id === task.id)
+
+                if (taskIndex !== -1) {
+                    tasks.splice(taskIndex, 1);
+                    tasks.push(task);
+                } 
+                displayTasks()
         })
 
         let remove = document.createElement("button")
@@ -121,6 +137,10 @@ function displayTasks(){
         remove.classList.add("deleteButton")
         
         remove.addEventListener("click", (event) => {
+            if(task.id === doingNowTaskId ){
+                doingNowTaskId = null
+                doingNowTask.textContent = "None";
+            }
            let taskIndex = tasks.findIndex(item => {
                 return item.id === task.id
             })
@@ -170,12 +190,34 @@ function displayTasks(){
             saveButton.after(cancelButton)
 
         })
+
+        let doingNowButton = document.createElement("button")
+        doingNowButton.textContent = "Doing Now"
+        doingNowButton.classList.add("doingNowButton")
+
+        doingNowButton.addEventListener("click",(event) =>{
+
+            if(task.id === doingNowTaskId ){
+                doingNowTaskId = null
+                doingNowTask.textContent = "None";
+                
+            }
+            else{
+                doingNowTaskId = task.id
+            doingNowTask.textContent = task.title;
+            }
+            displayTasks()
+            
+        })
         
 
         taskInfo.appendChild(checkBox)
         taskInfo.appendChild(spanTaskInfo)
         listItem.prepend(taskInfo)
         listItem.appendChild(importanceSpan);
+        if (!task.completed) {
+            listItem.appendChild(doingNowButton)
+        }
         listItem.appendChild(editButton)
         listItem.appendChild(remove)
         taskList.appendChild(listItem);
