@@ -61,7 +61,37 @@ function displayTasks(){
         importanceSpan.textContent= task.importance;
         importanceSpan.classList.add("importanceLabel", task.importance.toLowerCase())
 
-       
+        importanceSpan.addEventListener("click", (event) =>{
+
+            let importanceSelected = document.createElement("select")
+            let optionHigh = document.createElement("option")
+            optionHigh.textContent = "High"
+            let optionMedium = document.createElement("option")
+            optionMedium.textContent = "Medium"
+            let optionLow = document.createElement("option")
+            optionLow.textContent = "Low"
+            
+            importanceSelected.append(optionHigh,optionMedium,optionLow)
+            importanceSelected.value = task.importance
+            importanceSpan.replaceWith(importanceSelected)
+            
+            importanceSelected.addEventListener("change", (event)=>{
+                if(importanceSelected.value !== task.importance){
+                task.importance = importanceSelected.value
+                let taskIndex = tasks.findIndex(item => item.id === task.id)
+                if (taskIndex !== -1) {
+                    tasks.splice(taskIndex, 1);
+                    tasks.push(task);
+                }  
+            }
+            displayTasks()
+            })
+            importanceSelected.addEventListener("blur", () => {
+                displayTasks();
+            });
+        
+
+        })
 
         let taskInfo = document.createElement("div");
         taskInfo.classList.add("taskInfo");
