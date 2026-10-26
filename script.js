@@ -61,6 +61,8 @@ function displayTasks(){
         importanceSpan.textContent= task.importance;
         importanceSpan.classList.add("importanceLabel", task.importance.toLowerCase())
 
+       
+
         let taskInfo = document.createElement("div");
         taskInfo.classList.add("taskInfo");
 
@@ -97,12 +99,54 @@ function displayTasks(){
                 displayTasks()
             }
         })
+
+        let editButton = document.createElement("button")
+        editButton.textContent = "Edit"
+        editButton.classList.add("editButton")
+
+        editButton.addEventListener("click", (event) => {
+            let editInput = document.createElement("input")
+            editInput.type = "text"
+            editInput.value = task.title
+            spanTaskInfo.replaceWith(editInput);
+
+            let saveButton = document.createElement("button")
+            saveButton.textContent = "Save"
+            saveButton.classList.add("saveButton")
+            editButton.replaceWith(saveButton)
+
+            let editErrorMessage = document.createElement("p")
+
+            saveButton.addEventListener("click", (event) =>{
+                let updatedTask = editInput.value.trim()
+                if(updatedTask === ""){
+                    editErrorMessage.textContent = "Please enter a task name!"
+                    taskInfo.appendChild(editErrorMessage);
+                    return
+                }
+                else{
+                    task.title = updatedTask
+                    displayTasks()
+                }
+            })
+
+            cancelButton.addEventListener("click", (event) => {
+                displayTasks()
+            })
+
+            let cancelButton = document.createElement("button")
+            cancelButton.textContent = "Cancel"
+            cancelButton.classList.add("cancelButton")
+            saveButton.after(cancelButton)
+
+        })
         
 
         taskInfo.appendChild(checkBox)
         taskInfo.appendChild(spanTaskInfo)
         listItem.prepend(taskInfo)
         listItem.appendChild(importanceSpan);
+        listItem.appendChild(editButton)
         listItem.appendChild(remove)
         taskList.appendChild(listItem);
         
