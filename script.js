@@ -4,12 +4,13 @@ const importance = document.getElementById("importance");
 const errorMessage = document.getElementById("errorMessage");
 const taskList = document.getElementById("taskList");
 const doingNowTask = document.getElementById("doingNowTask");
+const startTimer = document.getElementById("startTimer");
 
 const tasks = [];
 let doingNowTaskId = null;
 
 taskForm.addEventListener("submit", (event) =>{
-    event.preventDefault(); // prvents the form from submitting to a server
+    event.preventDefault(); // prevnts the form from submitting to a server
     const title = taskName.value.trim(); // get rid of whitespace 
     const priority = importance.value;
     if(title === ""){ //give error message if the user does not prvide a task name
@@ -119,6 +120,7 @@ function displayTasks(){
                 spanTaskInfo.classList.add("completed")
                 doingNowTaskId = null
                 doingNowTask.textContent = "None";
+                startTimer.disabled = true;
             }
             else{
                 spanTaskInfo.classList.remove("completed")
@@ -140,6 +142,7 @@ function displayTasks(){
             if(task.id === doingNowTaskId ){
                 doingNowTaskId = null
                 doingNowTask.textContent = "None";
+                startTimer.disabled = true;
             }
            let taskIndex = tasks.findIndex(item => {
                 return item.id === task.id
@@ -200,11 +203,14 @@ function displayTasks(){
             if(task.id === doingNowTaskId ){
                 doingNowTaskId = null
                 doingNowTask.textContent = "None";
+                startTimer.disabled = true;
+                
                 
             }
             else{
                 doingNowTaskId = task.id
             doingNowTask.textContent = task.title;
+            startTimer.disabled = false;
             }
             displayTasks()
             
