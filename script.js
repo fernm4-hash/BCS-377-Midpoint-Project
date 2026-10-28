@@ -5,6 +5,15 @@ const errorMessage = document.getElementById("errorMessage");
 const taskList = document.getElementById("taskList");
 const doingNowTask = document.getElementById("doingNowTask");
 const startTimer = document.getElementById("startTimer");
+const timerDisplay = document.getElementById("timerDisplay")
+const timeDropDown = document.getElementById("duration")
+const resetTimer = document.getElementById("resetTimer")
+const popup = document.getElementById("popup")
+const confirmYes = document.getElementById("confirmYes")
+const confirmNo = document.getElementById("confirmNo")
+let timeRemaining = 0
+let timerInterval = null
+let isTimerRunning = false
 
 const tasks = [];
 let doingNowTaskId = null;
@@ -117,10 +126,13 @@ function displayTasks(){
         checkBox.addEventListener("change", (event) =>{
             task.completed = checkBox.checked;
             if(task.completed && task.id === doingNowTaskId ){
-                spanTaskInfo.classList.add("completed")
                 doingNowTaskId = null
                 doingNowTask.textContent = "None";
                 startTimer.disabled = true;
+                resetInterval()
+            }
+            if(task.completed === true){
+                spanTaskInfo.classList.add("completed")
             }
             else{
                 spanTaskInfo.classList.remove("completed")
@@ -143,6 +155,7 @@ function displayTasks(){
                 doingNowTaskId = null
                 doingNowTask.textContent = "None";
                 startTimer.disabled = true;
+                resetInterval()
             }
            let taskIndex = tasks.findIndex(item => {
                 return item.id === task.id
@@ -183,14 +196,16 @@ function displayTasks(){
                 }
             })
 
-            cancelButton.addEventListener("click", (event) => {
-                displayTasks()
-            })
+            
 
             let cancelButton = document.createElement("button")
             cancelButton.textContent = "Cancel"
             cancelButton.classList.add("cancelButton")
             saveButton.after(cancelButton)
+
+            cancelButton.addEventListener("click", (event) => {
+                displayTasks()
+            })
 
         })
 
@@ -213,6 +228,7 @@ function displayTasks(){
             startTimer.disabled = false;
             }
             displayTasks()
+            resetInterval()
             
         })
         
@@ -242,3 +258,114 @@ function displayTasks(){
 
     })
 }
+
+function setTimerDuration(){
+    timeRemaining = Number(timeDropDown.value) * 60
+}
+
+function updateTimerDisplay(){
+    let remainingMin = Math.floor(timeRemaining / 60)
+    let remainingSec = timeRemaining % 60
+    let minutes = remainingMin.toString()
+    let seconds = remainingSec.toString()
+    minutes = minutes.padStart(2,"0")
+    seconds = seconds.padStart(2,"0")
+    timerDisplay.textContent = minutes + ":" + seconds
+}
+
+timeDropDown.addEventListener("change", (event) =>{
+    setTimerDuration()
+    updateTimerDisplay()
+})
+
+function startCountdown(){
+    if(isTimerRunning){
+        return
+    }
+    else{
+        isTimerRunning = true
+        timerInterval = setInterval(() =>{
+            timeRemaining -= 1
+            if(timeRemaining <= 0){
+                timeRemaining = 0
+                clearInterval(timerInterval)
+                timerInterval = null
+                isTimerRunning = false
+                timeDropDown.disabled = false
+                popup.showModal()
+                
+            }
+            updateTimerDisplay()
+            
+        },1000)
+        timeDropDown.disabled = true
+    }
+
+}
+
+startTimer.addEventListener("click", (event)=>{
+    if(isTimerRunning){
+        pauseInterval()
+    }
+    else{
+        startTimer.textContent = "Pause"
+        startCountdown()
+
+    }
+    
+})
+
+function pauseInterval(){
+    clearInterval(timerInterval)
+    timerInterval = null
+    isTimerRunning = false
+    startTimer.textContent = "Resume"
+    timeDropDown.disabled = false
+}
+
+function resetInterval(){
+    clearInterval(timerInterval)
+    timerInterval = null
+    isTimerRunning = false
+    setTimerDuration()
+    updateTimerDisplay()
+    startTimer.textContent = "Start"
+    timeDropDown.disabled = false
+}
+
+resetTimer.addEventListener("click", (event) =>{
+    resetInterval()
+})
+
+confirmYes.addEventListener("click", (event)=>{
+    let selectedTask = tasks.find(task =>{return task.id === doingNowTaskId })
+    if(selectedTask){
+        selectedTask.completed = true
+        let taskIndex = tasks.findIndex(item => item.id === selectedTask.id)
+
+                if (taskIndex !== -1) {
+                    tasks.splice(taskIndex, 1);
+                    tasks.push(selectedTask);
+                    doingNowTaskId = null
+                    doingNowTask.textContent = "None"
+                    startTimer.disabled = true
+                    resetInterval()
+                } 
+                
+
+    }
+    displayTasks()
+    popup.close()
+})
+
+confirmNo.addEventListener("click", (event) =>{
+    resetInterval()
+    popup.close()
+})
+
+popup.addEventListener("cancel", (event)=>{
+    event.preventDefault()
+})
+
+setTimerDuration()
+updateTimerDisplay()

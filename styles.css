@@ -187,3 +187,33 @@ h2{
 #taskList li.doingNow{
     background-color: #90E0EF;
 }
+
+#popup{
+    background: white;
+    padding: 30px;
+    border: none;
+    border-radius: 15px;
+    text-align: center;
+    max-width: 350px;
+}
+
+#popup ::backdrop{
+    background: rgba(0, 0, 0, 0.5);
+}
+
+#confirmYes, #confirmNo{
+    border: none;
+    color: white;
+    border-radius: 8px;
+    padding: 12px 20px;
+    margin: 6px;
+    cursor: pointer;
+}
+
+#confirmYes{
+    background-color: #0077B6;
+}
+
+#confirmNo{
+    background-color: #023E8A;
+}
