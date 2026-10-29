@@ -139,6 +139,7 @@ h2{
     padding: 4px;
     border-radius: 8px;
     font-size: 12px;
+    cursor: pointer;
 }
 
 .high {
@@ -218,4 +219,162 @@ h2{
 
 #confirmNo{
     background-color: #023E8A;
+}
+
+#errorMessage, .editErrorMessage{
+    color: #DC2626;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.editContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+    min-width: 0;
+}
+
+.editErrorMessage {
+    margin: 0;
+}
+
+#taskList li {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.taskInfo {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    flex: 1;
+    min-width: 0;
+}
+
+.taskContent {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+    flex: 1;
+    overflow-wrap: anywhere;
+}
+
+.taskButtons {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+}
+
+.importanceLabel {
+    flex-shrink: 0;
+    margin-left: auto;
+}
+
+.editInput {
+    padding: 10px 12px;
+    border: 2px solid #90E0EF;
+    border-radius: 8px;
+    background-color: #F0F9FF;
+    color: #03045E;
+    font-family: inherit;
+    font-size: 14px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.editInput:focus {
+    outline: none;
+    border-color: #0077B6;
+}
+
+.taskButtons button {
+    padding: 8px 12px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* Doing Now */
+.doingNowButton {
+    background-color: #0077B6;
+}
+
+.doingNowButton:hover {
+    background-color: #023E8A;
+}
+
+/* Edit */
+.editButton {
+    background-color: #03045E;
+}
+
+.editButton:hover {
+    background-color: #023E8A;
+}
+
+/* Delete */
+.deleteButton {
+    background-color: #991B1B;
+}
+
+.deleteButton:hover {
+    background-color: #7F1D1D;
+}
+
+/* Save */
+.saveButton {
+    background-color: #166534;
+}
+
+.saveButton:hover {
+    background-color: #14532D;
+}
+
+/* Cancel */
+.cancelButton {
+    background-color: #64748B;
+}
+
+.cancelButton:hover {
+    background-color: #475569;
+}
+
+.doingNow .doingNowButton {
+    background-color: #023E8A;
+}
+
+.doingNow .doingNowButton:hover {
+    background-color: #03045E;
+}
+
+.importanceSelect {
+    padding: 8px 12px;
+    border: 2px solid #90E0EF;
+    border-radius: 8px;
+    background-color: #F0F9FF;
+    color: #03045E;
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: bold;
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.importanceSelect:focus {
+    outline: none;
+    border-color: #0077B6;
+}
+
+.importanceSelect:hover {
+    background-color: #CAF0F8;
 }

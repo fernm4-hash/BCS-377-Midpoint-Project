@@ -160,7 +160,13 @@ function editTask(task, spanTaskInfo, editButton, taskInfo){
             let editInput = document.createElement("input")
             editInput.type = "text"
             editInput.value = task.title
-            spanTaskInfo.replaceWith(editInput);
+            editInput.classList.add("editInput")
+
+            let editContainer = document.createElement("div")
+            editContainer.classList.add("editContainer")
+
+            editContainer.appendChild(editInput)
+            spanTaskInfo.replaceWith(editContainer)
 
             let saveButton = document.createElement("button")
             saveButton.textContent = "Save"
@@ -168,12 +174,13 @@ function editTask(task, spanTaskInfo, editButton, taskInfo){
             editButton.replaceWith(saveButton)
 
             let editErrorMessage = document.createElement("p")
+            editErrorMessage.classList.add("editErrorMessage");
 
             saveButton.addEventListener("click", (event) =>{
                 let updatedTask = editInput.value.trim()
                 if(updatedTask === ""){
                     editErrorMessage.textContent = "Please enter a task name!"
-                    taskInfo.appendChild(editErrorMessage);
+                    editContainer.appendChild(editErrorMessage);
                     return
                 }
                 else{
@@ -215,6 +222,7 @@ function createTaskElement(task){
             }
 
             let importanceSelected = document.createElement("select")
+            importanceSelected.classList.add("importanceSelect")
             let optionHigh = document.createElement("option")
             optionHigh.textContent = "High"
             let optionMedium = document.createElement("option")
@@ -239,11 +247,16 @@ function createTaskElement(task){
                 displayTasks();
             });
         
-
         })
 
         let taskInfo = document.createElement("div");
         taskInfo.classList.add("taskInfo");
+
+        let taskContent = document.createElement("div");
+        taskContent.classList.add("taskContent");
+
+        let taskButtons = document.createElement("div");
+        taskButtons.classList.add("taskButtons");
 
         let spanTaskInfo = document.createElement("span");
         spanTaskInfo.textContent = task.title
@@ -283,16 +296,22 @@ function createTaskElement(task){
             toggleDoingNow(task)
         })
         
-        taskInfo.appendChild(checkBox)
-        taskInfo.appendChild(spanTaskInfo)
-        listItem.prepend(taskInfo)
-        listItem.appendChild(importanceSpan);
+        taskButtons.appendChild(editButton);
+        taskButtons.appendChild(remove);
+
         if (!task.completed) {
-            listItem.appendChild(doingNowButton)
-        }
-        listItem.appendChild(editButton)
-        listItem.appendChild(remove)
-        
+            taskButtons.prepend(doingNowButton);
+        }  
+
+        taskContent.appendChild(spanTaskInfo);
+        taskContent.appendChild(taskButtons);
+
+        taskInfo.appendChild(checkBox);
+        taskInfo.appendChild(taskContent);
+
+        listItem.appendChild(taskInfo);
+        listItem.appendChild(importanceSpan);
+
         return listItem;
 }
 
