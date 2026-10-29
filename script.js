@@ -5,15 +5,17 @@ const errorMessage = document.getElementById("errorMessage");
 const taskList = document.getElementById("taskList");
 const doingNowTask = document.getElementById("doingNowTask");
 const startTimer = document.getElementById("startTimer");
-const timerDisplay = document.getElementById("timerDisplay")
-const timeDropDown = document.getElementById("duration")
-const resetTimer = document.getElementById("resetTimer")
-const popup = document.getElementById("popup")
-const confirmYes = document.getElementById("confirmYes")
-const confirmNo = document.getElementById("confirmNo")
-let timeRemaining = 0
-let timerInterval = null
-let isTimerRunning = false
+const timerDisplay = document.getElementById("timerDisplay");
+const timeDropDown = document.getElementById("duration");
+const resetTimer = document.getElementById("resetTimer");
+const popup = document.getElementById("popup");
+const confirmYes = document.getElementById("confirmYes");
+const confirmNo = document.getElementById("confirmNo");
+let nextTaskId = 1;
+let editingTaskId = null;
+let timeRemaining = 0;
+let timerInterval = null;
+let isTimerRunning = false;
 
 const tasks = [];
 let doingNowTaskId = null;
@@ -29,7 +31,7 @@ taskForm.addEventListener("submit", (event) =>{
     errorMessage.textContent= "";
 
     const newTask = {
-        id: Date.now(),
+        id: nextTaskId++,
         title: title,
         importance: priority,
         completed: false
@@ -38,6 +40,8 @@ taskForm.addEventListener("submit", (event) =>{
     tasks.push(newTask);
     
     displayTasks();
+
+    taskForm.reset();
 })
 
 function displayTasks(){
@@ -79,6 +83,12 @@ function displayTasks(){
         importanceSpan.classList.add("importanceLabel", task.importance.toLowerCase())
 
         importanceSpan.addEventListener("click", (event) =>{
+            if(editingTaskId !== null){
+                return
+            }
+            else{
+                editingTaskId = task.id
+            }
 
             let importanceSelected = document.createElement("select")
             let optionHigh = document.createElement("option")
@@ -91,6 +101,7 @@ function displayTasks(){
             importanceSelected.append(optionHigh,optionMedium,optionLow)
             importanceSelected.value = task.importance
             importanceSpan.replaceWith(importanceSelected)
+            importanceSelected.focus()
             
             importanceSelected.addEventListener("change", (event)=>{
                 if(importanceSelected.value !== task.importance){
@@ -101,9 +112,11 @@ function displayTasks(){
                     tasks.push(task);
                 }  
             }
+            editingTaskId = null
             displayTasks()
             })
             importanceSelected.addEventListener("blur", () => {
+                editingTaskId = null
                 displayTasks();
             });
         
@@ -125,17 +138,14 @@ function displayTasks(){
 
         checkBox.addEventListener("change", (event) =>{
             task.completed = checkBox.checked;
+            if (editingTaskId === task.id) {
+                        editingTaskId = null;
+                }
             if(task.completed && task.id === doingNowTaskId ){
                 doingNowTaskId = null
                 doingNowTask.textContent = "None";
                 startTimer.disabled = true;
                 resetInterval()
-            }
-            if(task.completed === true){
-                spanTaskInfo.classList.add("completed")
-            }
-            else{
-                spanTaskInfo.classList.remove("completed")
             }
             let taskIndex = tasks.findIndex(item => item.id === task.id)
 
@@ -162,6 +172,9 @@ function displayTasks(){
             })
             if( taskIndex !== -1){
                 tasks.splice(taskIndex,1)
+                if (editingTaskId === task.id) {
+                        editingTaskId = null;
+                }
                 displayTasks()
             }
         })
@@ -171,6 +184,12 @@ function displayTasks(){
         editButton.classList.add("editButton")
 
         editButton.addEventListener("click", (event) => {
+            if(editingTaskId !== null){
+                return
+            }
+            else{
+                editingTaskId = task.id
+            }
             let editInput = document.createElement("input")
             editInput.type = "text"
             editInput.value = task.title
@@ -192,11 +211,13 @@ function displayTasks(){
                 }
                 else{
                     task.title = updatedTask
+                    if(task.id === doingNowTaskId){
+                        doingNowTask.textContent = task.title
+                    }
+                    editingTaskId = null
                     displayTasks()
                 }
             })
-
-            
 
             let cancelButton = document.createElement("button")
             cancelButton.textContent = "Cancel"
@@ -204,6 +225,7 @@ function displayTasks(){
             saveButton.after(cancelButton)
 
             cancelButton.addEventListener("click", (event) => {
+                editingTaskId = null
                 displayTasks()
             })
 
@@ -279,7 +301,7 @@ timeDropDown.addEventListener("change", (event) =>{
 })
 
 function startCountdown(){
-    if(isTimerRunning){
+    if(isTimerRunning || doingNowTaskId === null || timeRemaining <= 0){
         return
     }
     else{
@@ -308,9 +330,10 @@ startTimer.addEventListener("click", (event)=>{
         pauseInterval()
     }
     else{
-        startTimer.textContent = "Pause"
         startCountdown()
-
+        if(isTimerRunning){
+            startTimer.textContent = "Pause"
+        }
     }
     
 })
