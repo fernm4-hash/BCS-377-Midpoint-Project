@@ -304,7 +304,7 @@ h2{
     cursor: pointer;
 }
 
-/* Doing Now */
+
 .doingNowButton {
     background-color: #0077B6;
 }
@@ -313,7 +313,7 @@ h2{
     background-color: #023E8A;
 }
 
-/* Edit */
+
 .editButton {
     background-color: #03045E;
 }
@@ -322,7 +322,7 @@ h2{
     background-color: #023E8A;
 }
 
-/* Delete */
+
 .deleteButton {
     background-color: #991B1B;
 }
@@ -331,7 +331,7 @@ h2{
     background-color: #7F1D1D;
 }
 
-/* Save */
+
 .saveButton {
     background-color: #166534;
 }
@@ -340,7 +340,7 @@ h2{
     background-color: #14532D;
 }
 
-/* Cancel */
+
 .cancelButton {
     background-color: #64748B;
 }
