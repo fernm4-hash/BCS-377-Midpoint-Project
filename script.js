@@ -44,10 +44,7 @@ taskForm.addEventListener("submit", (event) =>{
     taskForm.reset();
 })
 
-function displayTasks(){
-
-    taskList.innerHTML = "";
-
+function sortTasks(){
     let activeTasks = tasks.filter(task =>{
         return task.completed === false
     })
@@ -67,12 +64,139 @@ function displayTasks(){
     })
 
     let sortedTasks = activeTasks.concat(completedTasks)
-    
-    
 
-    sortedTasks.forEach(task =>{
+    return sortedTasks
 
-        let listItem = document.createElement("li");
+}
+
+function deleteTask(task){
+
+    if(task.id === doingNowTaskId ){
+                doingNowTaskId = null
+                doingNowTask.textContent = "None";
+                startTimer.disabled = true;
+                resetInterval()
+            }
+           let taskIndex = tasks.findIndex(item => {
+                return item.id === task.id
+            })
+            if( taskIndex !== -1){
+                tasks.splice(taskIndex,1)
+                if (editingTaskId === task.id) {
+                        editingTaskId = null;
+                }
+                displayTasks()
+            }
+
+}
+
+function toggleTaskCompleted(task){
+
+    task.completed = !task.completed;
+            if (editingTaskId === task.id) {
+                        editingTaskId = null;
+                }
+            if(task.completed && task.id === doingNowTaskId ){
+                doingNowTaskId = null
+                doingNowTask.textContent = "None";
+                startTimer.disabled = true;
+                resetInterval()
+            }
+            let taskIndex = tasks.findIndex(item => item.id === task.id)
+
+                if (taskIndex !== -1) {
+                    tasks.splice(taskIndex, 1);
+                    tasks.push(task);
+                } 
+                displayTasks()
+}
+
+function toggleDoingNow(task){
+    if(task.id === doingNowTaskId ){
+                doingNowTaskId = null
+                doingNowTask.textContent = "None";
+                startTimer.disabled = true;
+                
+                
+            }
+            else{
+                doingNowTaskId = task.id
+            doingNowTask.textContent = task.title;
+            startTimer.disabled = false;
+            }
+            displayTasks()
+            resetInterval()
+}
+
+function changeImportance(task, newImportance){
+
+    if(newImportance !== task.importance){
+                task.importance = newImportance;
+                let taskIndex = tasks.findIndex(item => item.id === task.id)
+                if (taskIndex !== -1) {
+                    tasks.splice(taskIndex, 1);
+                    tasks.push(task);
+                }  
+            }
+            
+}
+
+function saveTask(task, updatedTitle){
+    task.title = updatedTitle
+
+    if(task.id === doingNowTaskId){
+        doingNowTask.textContent = task.title
+    }
+        
+}
+
+function editTask(task, spanTaskInfo, editButton, taskInfo){
+    if(editingTaskId !== null){
+                return
+            }
+            else{
+                editingTaskId = task.id
+            }
+            let editInput = document.createElement("input")
+            editInput.type = "text"
+            editInput.value = task.title
+            spanTaskInfo.replaceWith(editInput);
+
+            let saveButton = document.createElement("button")
+            saveButton.textContent = "Save"
+            saveButton.classList.add("saveButton")
+            editButton.replaceWith(saveButton)
+
+            let editErrorMessage = document.createElement("p")
+
+            saveButton.addEventListener("click", (event) =>{
+                let updatedTask = editInput.value.trim()
+                if(updatedTask === ""){
+                    editErrorMessage.textContent = "Please enter a task name!"
+                    taskInfo.appendChild(editErrorMessage);
+                    return
+                }
+                else{
+                    saveTask(task, updatedTask)
+                    editingTaskId = null
+                    displayTasks()
+                }
+            })
+
+            let cancelButton = document.createElement("button")
+            cancelButton.textContent = "Cancel"
+            cancelButton.classList.add("cancelButton")
+            saveButton.after(cancelButton)
+
+            cancelButton.addEventListener("click", (event) => {
+                editingTaskId = null
+                displayTasks()
+            })
+
+}
+
+function createTaskElement(task){
+    let listItem = document.createElement("li");
 
         if(task.id === doingNowTaskId){
             listItem.classList.add("doingNow")
@@ -104,16 +228,11 @@ function displayTasks(){
             importanceSelected.focus()
             
             importanceSelected.addEventListener("change", (event)=>{
-                if(importanceSelected.value !== task.importance){
-                task.importance = importanceSelected.value
-                let taskIndex = tasks.findIndex(item => item.id === task.id)
-                if (taskIndex !== -1) {
-                    tasks.splice(taskIndex, 1);
-                    tasks.push(task);
-                }  
-            }
-            editingTaskId = null
-            displayTasks()
+
+                changeImportance(task, importanceSelected.value)
+                editingTaskId = null
+                displayTasks()
+                
             })
             importanceSelected.addEventListener("blur", () => {
                 editingTaskId = null
@@ -137,23 +256,7 @@ function displayTasks(){
         checkBox.checked = task.completed;
 
         checkBox.addEventListener("change", (event) =>{
-            task.completed = checkBox.checked;
-            if (editingTaskId === task.id) {
-                        editingTaskId = null;
-                }
-            if(task.completed && task.id === doingNowTaskId ){
-                doingNowTaskId = null
-                doingNowTask.textContent = "None";
-                startTimer.disabled = true;
-                resetInterval()
-            }
-            let taskIndex = tasks.findIndex(item => item.id === task.id)
-
-                if (taskIndex !== -1) {
-                    tasks.splice(taskIndex, 1);
-                    tasks.push(task);
-                } 
-                displayTasks()
+            toggleTaskCompleted(task)
         })
 
         let remove = document.createElement("button")
@@ -161,22 +264,7 @@ function displayTasks(){
         remove.classList.add("deleteButton")
         
         remove.addEventListener("click", (event) => {
-            if(task.id === doingNowTaskId ){
-                doingNowTaskId = null
-                doingNowTask.textContent = "None";
-                startTimer.disabled = true;
-                resetInterval()
-            }
-           let taskIndex = tasks.findIndex(item => {
-                return item.id === task.id
-            })
-            if( taskIndex !== -1){
-                tasks.splice(taskIndex,1)
-                if (editingTaskId === task.id) {
-                        editingTaskId = null;
-                }
-                displayTasks()
-            }
+            deleteTask(task)
         })
 
         let editButton = document.createElement("button")
@@ -184,51 +272,7 @@ function displayTasks(){
         editButton.classList.add("editButton")
 
         editButton.addEventListener("click", (event) => {
-            if(editingTaskId !== null){
-                return
-            }
-            else{
-                editingTaskId = task.id
-            }
-            let editInput = document.createElement("input")
-            editInput.type = "text"
-            editInput.value = task.title
-            spanTaskInfo.replaceWith(editInput);
-
-            let saveButton = document.createElement("button")
-            saveButton.textContent = "Save"
-            saveButton.classList.add("saveButton")
-            editButton.replaceWith(saveButton)
-
-            let editErrorMessage = document.createElement("p")
-
-            saveButton.addEventListener("click", (event) =>{
-                let updatedTask = editInput.value.trim()
-                if(updatedTask === ""){
-                    editErrorMessage.textContent = "Please enter a task name!"
-                    taskInfo.appendChild(editErrorMessage);
-                    return
-                }
-                else{
-                    task.title = updatedTask
-                    if(task.id === doingNowTaskId){
-                        doingNowTask.textContent = task.title
-                    }
-                    editingTaskId = null
-                    displayTasks()
-                }
-            })
-
-            let cancelButton = document.createElement("button")
-            cancelButton.textContent = "Cancel"
-            cancelButton.classList.add("cancelButton")
-            saveButton.after(cancelButton)
-
-            cancelButton.addEventListener("click", (event) => {
-                editingTaskId = null
-                displayTasks()
-            })
-
+            editTask(task, spanTaskInfo, editButton, taskInfo);
         })
 
         let doingNowButton = document.createElement("button")
@@ -236,25 +280,9 @@ function displayTasks(){
         doingNowButton.classList.add("doingNowButton")
 
         doingNowButton.addEventListener("click",(event) =>{
-
-            if(task.id === doingNowTaskId ){
-                doingNowTaskId = null
-                doingNowTask.textContent = "None";
-                startTimer.disabled = true;
-                
-                
-            }
-            else{
-                doingNowTaskId = task.id
-            doingNowTask.textContent = task.title;
-            startTimer.disabled = false;
-            }
-            displayTasks()
-            resetInterval()
-            
+            toggleDoingNow(task)
         })
         
-
         taskInfo.appendChild(checkBox)
         taskInfo.appendChild(spanTaskInfo)
         listItem.prepend(taskInfo)
@@ -264,20 +292,19 @@ function displayTasks(){
         }
         listItem.appendChild(editButton)
         listItem.appendChild(remove)
-        taskList.appendChild(listItem);
         
+        return listItem;
+}
 
-        /* This is what I am creating in html
-        <li>
-            <div class="taskInfo">
-                <input type="checkbox">
-                <span>Finish homework</span>
-            </div>
+function displayTasks(){
 
-            <span class="importanceLabel high">High</span>
-        </li>
-        */
+    taskList.innerHTML = "";
 
+    let sortedTasks = sortTasks()
+
+    sortedTasks.forEach(task =>{
+        let listItem = createTaskElement(task);
+        taskList.appendChild(listItem);
     })
 }
 
